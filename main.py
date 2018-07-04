@@ -68,6 +68,7 @@ def run():
             gameboard.explore(row, col)
         elif command == Defuse:
             gameboard.defuse(row, col)
+    gameboard.show()
 
 
 if __name__ == '__main__':

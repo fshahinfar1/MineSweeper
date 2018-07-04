@@ -14,15 +14,20 @@ class GameBoard:
         self.is_game_over_flag = False
         self.grid_view = [[Hide]*world_size for i in range(world_size)]
         self.cell_values = [[0]*world_size for i in range(world_size)]
-        self.unexplored_cells = world_size*world_size
+        self.unexplored_cells = (world_size*world_size)-mine_count
         self.left_mines = mine_count
         self.defuse_flags = mine_count
         rows = [0]*mine_count
         cols = [0]*mine_count
-        for i in range(mine_count):
-            rows[i] = randrange(world_size)
-            cols[i] = randrange(world_size)
-        for row,col in zip(rows, cols):
+        s = set()
+        temp = (0,0)
+        count_flag = 0
+        while count_flag < mine_count:
+            temp = (randrange(world_size), randrange(world_size))
+            if temp not in s:
+                s.add(temp)
+                count_flag += 1
+        for row,col in s:
             self.grid[row][col] = Bomb
         for i in range(world_size):
             for j in range(world_size):
@@ -50,20 +55,20 @@ class GameBoard:
             self.grid_view[row][col] = str(self.cell_values[row][col])
             self.unexplored_cells -= 1
             if self.unexplored_cells <= 0:
-                self.is_game_over_flag = True
+                self.win()
 
     def defuse(self, row, col):
         if self.is_out_of_board(row, col):
             return
-        if self.grid_view[row][col] != DefuseFlag:
+        if self.grid_view[row][col] == Hide:
             if self.defuse_flags > 0 :
                 self.grid_view[row][col] = DefuseFlag
                 self.defuse_flags -= 1
                 if self.grid[row][col] == Bomb:
                     self.left_mines -= 1
                     if self.left_mines <= 0:
-                        self.is_game_over_flag = True
-        else:
+                        self.win()
+        elif self.grid_view[row][col] == DefuseFlag:
             self.grid_view[row][col] = Hide
             self.defuse_flags += 1
             if self.grid[row][col] == Bomb:
@@ -72,6 +77,10 @@ class GameBoard:
     def explode(self):
         self.is_game_over_flag = True
         print("You have lost it was a bomb")
+
+    def win(self):
+        self.is_game_over_flag = True
+        print("You win")
 
     def show(self):
         for i in range(self.world_size):
@@ -91,3 +100,6 @@ class GameBoard:
         if col > self.world_size or col < 0:
             return True
         return False
+
+    def __str__(self):
+        return '<GameBoard Object>'
