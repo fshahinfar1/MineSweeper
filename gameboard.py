@@ -35,29 +35,33 @@ class GameBoard:
                             continue
                         if self.grid[i+r][j+c] == Bomb:
                             value += 1
-                self.cell_values = value
+                self.cell_values[i][j] = value
 
     def is_game_over(self):
         return self.is_game_over_flag
 
     def explore(self, row, col):
+        if self.is_out_of_board(row, col):
+            return
         if self.grid[row][col] == Bomb:
             self.grid_view[row][col] = 'b'
             self.explode()
-        else:
-            self.grid_view[row][col] = str(self.cell_value[row][col])
+        elif self.grid_view[row][col] == Hide:
+            self.grid_view[row][col] = str(self.cell_values[row][col])
             self.unexplored_cells -= 1
             if self.unexplored_cells <= 0:
                 self.is_game_over_flag = True
 
     def defuse(self, row, col):
+        if self.is_out_of_board(row, col):
+            return
         if self.grid_view[row][col] != DefuseFlag:
             if self.defuse_flags > 0 :
                 self.grid_view[row][col] = DefuseFlag
                 self.defuse_flags -= 1
                 if self.grid[row][col] == Bomb:
                     self.left_mines -= 1
-                    if left_mines <= 0:
+                    if self.left_mines <= 0:
                         self.is_game_over_flag = True
         else:
             self.grid_view[row][col] = Hide
@@ -80,3 +84,10 @@ class GameBoard:
         for i in range(self.world_size):
             print(i, end=' ')
         print()
+
+    def is_out_of_board(self, row, col):
+        if row > self.world_size or row < 0:
+            return True
+        if col > self.world_size or col < 0:
+            return True
+        return False

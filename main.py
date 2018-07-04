@@ -36,6 +36,7 @@ def take_cell():
     while(True):
         try:
             col = int(input('col: '))
+            break
         except:
             print('wrong input type')
     return row, col
@@ -64,9 +65,9 @@ def run():
             break
         row, col = take_cell()
         if command == Explore:
-            pass
+            gameboard.explore(row, col)
         elif command == Defuse:
-            pass
+            gameboard.defuse(row, col)
 
 
 if __name__ == '__main__':
