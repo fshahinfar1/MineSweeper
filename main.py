@@ -17,7 +17,9 @@ def initialize():
     while(True):
         try:
             mine_count = int(input('mines: '))
-            break
+            if mine_count <= world_size * world_size:
+                break
+            print(f'mines should be less than number of cells ({world_size*world_size})')
         except:
             print('wrong input type')
     return GameBoard(world_size, mine_count)
