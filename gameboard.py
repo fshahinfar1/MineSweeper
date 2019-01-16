@@ -57,6 +57,16 @@ class GameBoard:
             self.unexplored_cells -= 1
             if self.unexplored_cells <= 0:
                 self.win()
+            if self.cell_values[row][col] == 0:
+                for i in [-1, 0, 1]:
+                    if row + i > self.world_size or row + i < 0:
+                        continue
+                    for j in [-1, 0, 1]:
+                        if col + j > self.world_size or col + j < 0:
+                            continue
+                        if i == j == 0:
+                            continue
+                        self.explore(row+i, col+j)
 
     def defuse(self, row, col):
         if self.is_out_of_board(row, col):
