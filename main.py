@@ -1,9 +1,12 @@
+import os
 from gameboard import GameBoard
+
 
 Defuse = 0
 Explore = 1
 Exit = 2
 command_dict = {'e': Explore, 'd': Defuse, 'q': Exit}
+
 
 def initialize():
     world_size = 0
@@ -25,20 +28,24 @@ def initialize():
     return GameBoard(world_size, mine_count)
 
 
-def take_cell():
+def take_cell(max_row, max_col):
     row=0
     col=0
     print('Enter your move:')
     while(True):
         try:
             row = int(input('row: '))
-            break
+            if row < max_row:
+                break
+            print(f'row should be less than {max_row}. counting from zero.')
         except:
             print('wrong input type')
     while(True):
         try:
             col = int(input('col: '))
-            break
+            if col < max_col:
+                break
+            print(f'column should be less than {max_col}. counting from zero.')
         except:
             print('wrong input type')
     return row, col
@@ -58,18 +65,28 @@ def take_command():
     return command
 
 
+def clear_console():
+    if os.name == 'posix':
+        os.system('clear')
+    else:
+        os.system('cls')
+
+
 def run():
     gameboard = initialize()
+    size = gameboard.world_size
     while not gameboard.is_game_over():
+        clear_console()
         gameboard.show()
         command = take_command()
         if command == Exit:
             break
-        row, col = take_cell()
+        row, col = take_cell(size, size)
         if command == Explore:
             gameboard.explore(row, col)
         elif command == Defuse:
             gameboard.defuse(row, col)
+    clear_console()
     gameboard.show()
 
 
