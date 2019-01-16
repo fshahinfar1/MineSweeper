@@ -1,4 +1,4 @@
-from random import randrange
+from random import randrange, seed
 
 Empty=0
 Bomb=1
@@ -22,6 +22,7 @@ class GameBoard:
         s = set()
         temp = (0,0)
         count_flag = 0
+        seed()
         while count_flag < mine_count:
             temp = (randrange(world_size), randrange(world_size))
             if temp not in s:
